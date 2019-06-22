@@ -24,6 +24,12 @@ MENU menu;
 //-------------------------------------------------------------------------------------
 void setup()
 {
+	// LCD INIT //
+	lcd.init();
+	lcd.backlight();
+	lcd.clear();
+	lcd.blink();
+
 	// SERIAL COMMUNICATIONS //
 	// usb
 	Serial.begin(115200);
@@ -33,41 +39,40 @@ void setup()
 	Serial3.begin(115200);
 	delay(500);
 	Serial3.print("AT");
-	
-	// LCD INIT //
-	lcd.init();
-	lcd.backlight();
-	lcd.clear();
-	lcd.blink();
-	lcd.print("Test:");
-	delay(500);
+	lcd.print("Test AT:");
+	if (Serial3.available()) {
+		char x = Serial3.read();
+		Serial.write(x);
+		lcd.print(x);		
+	}
+	delay(3000);
 
 	// MENU //
 	menu.Print_Page(0);
 
 }
 
+char x, y;
 //-------------------------------------------------------------------------------------
 void loop()
 {
-	char x, y;
-
 	//usb read
 	if (Serial.available()) {
 		y = Serial.read();
 		Serial.write(y);
 		Serial3.write(y);
 		lcd.print(y);
-		//delay(50);
+		//Serial.flush();
+
 	}
 	//bluetooth read
 	if (Serial3.available()) {
 		x = Serial3.read();
-
 		Serial.write(x);
-		Serial3.write(x);
+		//Serial3.write(x);
 		lcd.print(x);
-		//delay(50);
+		//Serial3.flush();
+
 	}
 
 	delay(1);
