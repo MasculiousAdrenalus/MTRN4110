@@ -27,8 +27,9 @@ void setup()
 	Serial.begin(115200);
 	Serial.println("Connection Started");
 	delay(500);
-	BT.begin(115200);
-	BT.print("AT");
+
+	Serial3.begin(115200);
+	Serial.print("AT");
 	delay(500);
 	// LCD INIT
 	lcd.init();
@@ -42,19 +43,19 @@ char x, y;
 //-------------------------------------------------------------------------------------
 void loop()
 {
-	if (BT.available()) {
-		x = BT.read();
-
-		Serial.print(x);
-		BT.print(y);
-		lcd.print(x);
-	}
 	if (Serial.available()) {
 		y = Serial.read();
 
-		Serial.print(y);
-		BT.print(y);
+		Serial.write(y);
+		Serial3.write(y);
 		lcd.print(y);
+	}
+	if (Serial3.available()) {
+		x = Serial3.read();
+
+		Serial.write(x);
+		Serial3.write(x);
+		lcd.print(x);
 	}
 	//delay(2);
 }
