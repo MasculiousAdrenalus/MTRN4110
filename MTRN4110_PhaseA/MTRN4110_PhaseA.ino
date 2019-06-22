@@ -3,7 +3,6 @@
     Created:	22/06/2019 7:26:55 PM
     Author:     Bryce Gossling z3424655
 */
-
 #pragma pack(1)
 
 #include <arduino.h>
@@ -18,31 +17,35 @@
 
 //GLOBALS
 SoftwareSerial BT(RxD, TxD);
-
 LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+
 //-------------------------------------------------------------------------------------
 void setup()
 {
-	// Serial Comms
+	// SERIAL COMMUNICATIONS //
+	// usb
 	Serial.begin(115200);
+	delay(500);
 	Serial.println("Connection Started");
-	delay(500);
-
+	// bluetooth
 	Serial3.begin(115200);
-	Serial.print("AT");
 	delay(500);
-	// LCD INIT
+	Serial3.print("AT");
+	// LCD INIT //
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
-	lcd.print("Testing...123");
+	lcd.print("Test:");
 
 
 }
-char x, y;
+
 //-------------------------------------------------------------------------------------
 void loop()
 {
+	char x, y;
+	
 	if (Serial.available()) {
 		y = Serial.read();
 
