@@ -43,7 +43,7 @@ void setup()
 	// MENU //
 	menu.Print_Page(0);
 	lcd.setCursor(8, 0);
-	lcd.blink();
+	//lcd.blink();
 }
 //-------------------------------------------------------------------------------------
 void loop()

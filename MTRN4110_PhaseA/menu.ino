@@ -31,16 +31,16 @@ void MENU::Print_Page(int pageN) {
 	lcd.clear();
 	lcd.setCursor(0, 0);
 	lcd.print(this->thisBook.thisPage[pageN].line1);
-	Serial.println(this->thisBook.thisPage[pageN].line1);
+	//Serial.println(this->thisBook.thisPage[pageN].line1);
 	lcd.setCursor(0, 1);
 	lcd.print(this->thisBook.thisPage[pageN].line2);
-	Serial.println(this->thisBook.thisPage[pageN].line2);
+	//Serial.println(this->thisBook.thisPage[pageN].line2);
 	lcd.setCursor(0, 2);
 	lcd.print(this->thisBook.thisPage[pageN].line3);
-	Serial.println(this->thisBook.thisPage[pageN].line3);
+	//Serial.println(this->thisBook.thisPage[pageN].line3);
 	lcd.setCursor(0, 3);
 	lcd.print(this->thisBook.thisPage[pageN].line4);
-	Serial.println(this->thisBook.thisPage[pageN].line4);
+	//Serial.println(this->thisBook.thisPage[pageN].line4);
 	
 	this->prevPage = this->currentPage;
 	this->currentPage = pageN;
@@ -51,42 +51,88 @@ void MENU::Print_Page(int pageN) {
 	Serial.print("\n");
 }
 void MENU::Print_Maze(TUINT8 maze) {
+		Serial.println("----------");
 		//decodes messages
+	    Serial.print("|  ");
 		if (maze.index.b6 == 1) {
 			//lcd.print("a"); Serial.print("a");
 			lcd.setCursor(3, 1);
 			lcd.print('|');
+			Serial.print("|");
 		}
+		else {
+			Serial.print(" ");
+		}
+		//
+		Serial.print("  ");
 		if (maze.index.b5 == 1) {
 			//lcd.print("b"); Serial.print("b");
 			lcd.setCursor(6, 1);
 			lcd.print('|');
+			Serial.print("|");
 		}
+		else {
+			Serial.print(" ");
+		}
+		//
+		Serial.println("  |");
+		Serial.print("|");
 		if (maze.index.b4 == 1) {
 			//lcd.print("c"); Serial.print("c");
 			lcd.setCursor(1, 2);
 			lcd.print("--");
+			Serial.print("--");
 		}
+		else {
+			Serial.print("  ");
+		}
+		//
+		Serial.print(" ");
 		if (maze.index.b3 == 1) {
 			//lcd.print("d"); Serial.print("d");
 			lcd.setCursor(4, 2);
 			lcd.print("--");
+			Serial.print("--");
 		}
+		else {
+			Serial.print("  ");
+		}
+		//
+		Serial.print(" ");
 		if (maze.index.b2 == 1) {
 			//lcd.print("e"); Serial.print("e");
 			lcd.setCursor(7, 2);
 			lcd.print("--");
+			Serial.print("--");
 		}
+		else {
+			Serial.print("  ");
+		}
+		//
+		Serial.println("|");
+		Serial.print("|  ");
 		if (maze.index.b1 == 1) {
 			//lcd.print("f"); Serial.print("f");
 			lcd.setCursor(3, 3);
 			lcd.print('|');
+			Serial.print("|");
 		}
+		else {
+			Serial.print(" ");
+		}
+		//
+		Serial.print("  ");
 		if (maze.index.b0 == 1) {
 			//lcd.print("g"); Serial.print("g");
 			lcd.setCursor(6, 3);
 			lcd.print('|');
+			Serial.print("|");
 		}
+		else {
+			Serial.print(" ");
+		}
+		Serial.println("  |");
+		Serial.println("----------");
 		//not used
 		//if (maze.index.b7 == 1) {
 		//	//lcd.print("h"); Serial.print("h");
