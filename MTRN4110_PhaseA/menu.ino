@@ -52,17 +52,17 @@ void MENU::Print_Page(int pageN) {
 }
 void MENU::Print_Maze(TUINT8 maze) {
 		//decodes messages
-		if (maze.index.b0 == 1) {
+		if (maze.index.b6 == 1) {
 			//lcd.print("a"); Serial.print("a");
 			lcd.setCursor(3, 1);
 			lcd.print('|');
 		}
-		if (maze.index.b1 == 1) {
+		if (maze.index.b5 == 1) {
 			//lcd.print("b"); Serial.print("b");
 			lcd.setCursor(6, 1);
 			lcd.print('|');
 		}
-		if (maze.index.b2 == 1) {
+		if (maze.index.b4 == 1) {
 			//lcd.print("c"); Serial.print("c");
 			lcd.setCursor(1, 2);
 			lcd.print("--");
@@ -72,17 +72,17 @@ void MENU::Print_Maze(TUINT8 maze) {
 			lcd.setCursor(4, 2);
 			lcd.print("--");
 		}
-		if (maze.index.b4 == 1) {
+		if (maze.index.b2 == 1) {
 			//lcd.print("e"); Serial.print("e");
 			lcd.setCursor(7, 2);
 			lcd.print("--");
 		}
-		if (maze.index.b5 == 1) {
+		if (maze.index.b1 == 1) {
 			//lcd.print("f"); Serial.print("f");
 			lcd.setCursor(3, 3);
 			lcd.print('|');
 		}
-		if (maze.index.b6 == 1) {
+		if (maze.index.b0 == 1) {
 			//lcd.print("g"); Serial.print("g");
 			lcd.setCursor(6, 3);
 			lcd.print('|');

@@ -137,7 +137,7 @@ typedef union
 typedef struct {
 	long header = 0;
 	int command;
-	TUINT8 dataH, dataL;
+	TUINT8 dataH, dataM, dataL;
 }packet;
 
 typedef struct DataPacket {

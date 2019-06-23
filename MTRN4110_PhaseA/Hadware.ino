@@ -45,11 +45,12 @@ void HC06::getMaze() {
 	if (pack.header == 0x000000AB) {
 		menu.Print_Page(1);
 		lcd.setCursor(15, 0);
-		pack.command = getHex(Serial3.read());
+		//pack.command = getHex(Serial3.read());
 		pack.dataH.full = getHex(Serial3.read());
+		pack.dataM.full = getHex(Serial3.read());
 		pack.dataL.full = getHex(Serial3.read());
 		//lcd.print("data result:");
-		maze.full = pack.dataH.full * 10 + pack.dataL.full;
+		maze.full = pack.dataH.full * 100 + pack.dataM.full * 10 + pack.dataL.full;
 		lcd.print(maze.full);
 		//option for different messages
 		switch (pack.command)
