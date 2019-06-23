@@ -18,11 +18,7 @@
 
 char getHex(char ascii);
 //GLOBALS
-typedef struct {
-	long header = 0;
-	int command;
-	TUINT8 data;
-}packet;
+
 
 //-------------------------------------------------------------------------------------
 class HC06 {
@@ -100,36 +96,31 @@ void HC06::getMaze() {
 	//if (incomingByte > 10) { incomingByte -= 7; }
 	//Serial.print("(Hex)incomingByte:");
 	//Serial.println(incomingByte, HEX);
-	BT.pack.header <<= 4;
+	pack.header <<= 4;
 	//Serial.print("(shifted)Header:");
 	//Serial.println(Header, HEX);
-	BT.pack.header = BT.pack.header | (incomingByte & 0x0000000F);
+	pack.header = pack.header | (incomingByte & 0x0000000F);
 	//Serial.print("(or'ed)Header:");
 	//Serial.println(Header, HEX);
-	BT.pack.header &= 0x000000FF;
+	pack.header &= 0x000000FF;
 	//Serial.print("(and'ed)Header:");
 	//Serial.println(Header, HEX);
 
 	//Expect the new maze byte message 
-	if (BT.pack.header == HEADER_MAGIC) {
+	if (pack.header == HEADER_MAGIC) {
 		menu.Print_Page(1);
 		lcd.setCursor(15, 0);
-		BT.pack.command = getHex(Serial3.read());
-		BT.pack.data.full = getHex(Serial3.read());
-
+		pack.command = getHex(Serial3.read());
+		pack.dataH.full = getHex(Serial3.read());
+		pack.dataL.full = getHex(Serial3.read());
+		lcd.setCursor(0, 1);
+		lcd.print("dataH:");
+		lcd.print(pack.dataH.full);
+		lcd.setCursor(0, 2);
+		lcd.print("dataL:");
+		lcd.print(pack.dataL.full);
 		//option for different messages
-		switch (BT.pack.command)
-		{
-		case 0:
-			//lcd.print("qoobuuuuu!"); Serial.print("qoobuuuuu!");
-			//decodes messages
-			if (BT.pack.data.index.b0 == 1) {
-				lcd.print("fuckyeah!"); Serial.print("fuckyeah!");
-			}
-			break;
-		default: lcd.print("maze read error"); Serial.print("maze read error");
-			break;
-		}
+		menu.Print_Maze(pack);
 		
 	}
 	

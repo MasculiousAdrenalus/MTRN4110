@@ -50,6 +50,60 @@ void MENU::Print_Page(int pageN) {
 	}
 	Serial.print("\n");
 }
-void MENU::Print_Maze(char maze) {
-	//TUINT8 newMaze = (TUINT8)maze;
+void MENU::Print_Maze(packet pack) {
+	switch (pack.command)
+	{
+	case 0:
+		//decodes messages
+		if (pack.dataH.index.b0 == 1) {
+			lcd.print("a"); Serial.print("a");
+		}
+		if (pack.dataH.index.b1 == 1) {
+			lcd.print("b"); Serial.print("b");
+		}
+		if (pack.dataH.index.b2 == 1) {
+			lcd.print("c"); Serial.print("c");
+		}
+		if (pack.dataH.index.b3 == 1) {
+			lcd.print("d"); Serial.print("d");
+		}
+		if (pack.dataH.index.b4 == 1) {
+			lcd.print("e"); Serial.print("e");
+		}
+		if (pack.dataH.index.b5 == 1) {
+			lcd.print("f"); Serial.print("f");
+		}
+		if (pack.dataH.index.b6 == 1) {
+			lcd.print("g"); Serial.print("g");
+		}
+		if (pack.dataH.index.b6 == 1) {
+			lcd.print("h"); Serial.print("h");
+		}
+		//
+		if (pack.dataL.index.b0 == 1) {
+			lcd.print("a"); Serial.print("a");
+		}
+		if (pack.dataL.index.b1 == 1) {
+			lcd.print("b"); Serial.print("b");
+		}
+		if (pack.dataL.index.b2 == 1) {
+			lcd.print("c"); Serial.print("c");
+		}
+		if (pack.dataL.index.b3 == 1) {
+			lcd.print("d"); Serial.print("d");
+		}
+		if (pack.dataL.index.b4 == 1) {
+			lcd.print("e"); Serial.print("e");
+		}
+		if (pack.dataL.index.b5 == 1) {
+			lcd.print("f"); Serial.print("f");
+		}
+		if (pack.dataL.index.b6 == 1) {
+			lcd.print("g"); Serial.print("g");
+		}
+		if (pack.dataL.index.b6 == 1) {
+			lcd.print("h"); Serial.print("h");
+		}
+		break;
+	}
 }

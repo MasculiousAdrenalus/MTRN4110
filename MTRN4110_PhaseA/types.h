@@ -24,6 +24,7 @@ typedef unsigned int UINT16;
 typedef unsigned long UINT32;
 
 
+
 // ----------------------------------------
 // UINT8
 // ----------------------------------------
@@ -132,6 +133,13 @@ typedef union
 //	UINT8 length; // 1byte
 //	UINT8 command; // 1byte
 //} Pack;
+
+typedef struct {
+	long header = 0;
+	int command;
+	TUINT8 dataH, dataL;
+}packet;
+
 typedef struct DataPacket {
 	long HEADER = 0x06efcdab; //generic header 4bytes
 	//uint seqNum;
