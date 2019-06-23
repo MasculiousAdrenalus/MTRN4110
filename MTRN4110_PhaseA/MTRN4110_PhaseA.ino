@@ -60,34 +60,26 @@ void loop()
 {
 	char incomingByte = 0;
 	bool flag = 0;
-	if (Serial3.available()) { incomingByte = Serial3.read(); flag = 1; }
+
+	if (Serial3.available()) { 
+		incomingByte = Serial3.read(); 
+		flag = 1;	
+		getMaze(incomingByte, flag);
+	}
+
 	echo(incomingByte, flag);
-	getMaze(incomingByte, flag);
+
 
 	delay(1);
 }
 //-------------------------------------------------------------------------------------
 void getMaze(char incomingByte, bool flag) {
-
-}
-//-------------------------------------------------------------------------------------
-void echo(char incomingByte, bool flag) {
-	//usb read
-	if (Serial.available()) {
-		//incomingByte = Serial.read();
-		Serial.write(incomingByte);
-		Serial3.write(incomingByte);
-		lcd.print(incomingByte);
-	}
-	//bluetooth read
 	if (flag) {
-		//incomingByte = Serial3.read();
-		lcd.print(incomingByte);
 		Serial.print("(string)incomingByte:");
 		Serial.println(incomingByte);
 		//trap header
 		incomingByte -= 48;
-		if (incomingByte > 10) {incomingByte-=7;}
+		if (incomingByte > 10) { incomingByte -= 7; }
 		Serial.print("(Hex)incomingByte:");
 		Serial.println(incomingByte, HEX);
 		Header <<= 4;
@@ -107,6 +99,22 @@ void echo(char incomingByte, bool flag) {
 
 		//Serial3.write(x);
 		Serial.print("\n");
+	}
+}
+//-------------------------------------------------------------------------------------
+void echo(char incomingByte, bool flag) {
+	//usb read
+	if (Serial.available()) {
+		//incomingByte = Serial.read();
+		Serial.write(incomingByte);
+		Serial3.write(incomingByte);
+		lcd.print(incomingByte);
+	}
+	//bluetooth read
+	if (flag) {
+		//incomingByte = Serial3.read();
+		lcd.print(incomingByte);
+
 
 	}
 }
