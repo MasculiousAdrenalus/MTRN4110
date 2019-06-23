@@ -20,6 +20,7 @@
 SoftwareSerial BT(RxD, TxD);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 MENU menu;
+SerialCommunication SC;
 
 //-------------------------------------------------------------------------------------
 void setup()
@@ -28,7 +29,6 @@ void setup()
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
-	lcd.blink();
 
 	// SERIAL COMMUNICATIONS //
 	// usb
@@ -39,45 +39,69 @@ void setup()
 	Serial3.begin(115200);
 	delay(500);
 	Serial3.print("AT");
-	lcd.print("Test AT:");
-	if (Serial3.available()) {
-		char x = Serial3.read();
-		Serial.write(x);
-		lcd.print(x);		
-	}
-	delay(3000);
+	//if (Serial3.available()) {
+	//	char x = Serial3.read();
+	//	Serial.write(x);
+	//	lcd.print(x);		
+	//}
 
 	// MENU //
 	menu.Print_Page(0);
-
+	lcd.setCursor(8, 0);
+	lcd.blink();
 }
 
-char x, y;
+char incomingByte =0;
+int incomingMsg = 0;
+long Header = 0;
 //-------------------------------------------------------------------------------------
 void loop()
 {
-	//usb read
-	if (Serial.available()) {
-		y = Serial.read();
-		Serial.write(y);
-		Serial3.write(y);
-		lcd.print(y);
-		//Serial.flush();
-
-	}
-	//bluetooth read
-	if (Serial3.available()) {
-		x = Serial3.read();
-		Serial.write(x);
-		//Serial3.write(x);
-		lcd.print(x);
-		//Serial3.flush();
-
-	}
+	echo();
 
 	delay(1);
 }
-//
+//-------------------------------------------------------------------------------------
+void echo() {
+	//usb read
+	if (Serial.available()) {
+		incomingByte = Serial.read();
+		Serial.write(incomingByte);
+		Serial3.write(incomingByte);
+		lcd.print(incomingByte);
+	}
+	//bluetooth read
+	if (Serial3.available()) {
+		incomingByte = Serial3.read();
+		lcd.print(incomingByte);
+		Serial.print("(string)incomingByte:");
+		Serial.println(incomingByte);
+		//trap header
+		incomingByte -= 48;
+		if (incomingByte > 10) {incomingByte-=7;}
+		Serial.print("(Hex)incomingByte:");
+		Serial.println(incomingByte, HEX);
+
+		Header <<= 4;
+		Serial.print("(shifted)Header:");
+		Serial.println(Header, HEX);
+		Header = Header | (incomingByte & 0x0000000F);
+		Serial.print("(or'ed)Header:");
+		Serial.println(Header, HEX);
+		Header &= 0x000000FF;
+		Serial.print("(and'ed)Header:");
+		Serial.println(Header, HEX);
+
+		//Expect the new maze byte message 
+		if (Header == HEADER_MAGIC) {
+			lcd.print("fuckyesfuckyesfuckyes123");
+		}
+
+		//Serial3.write(x);
+		Serial.print("\n");
+
+	}
+}
 //uint32_t GetNumber()
 //{
 //	lcd.blink();

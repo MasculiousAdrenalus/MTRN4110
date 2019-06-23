@@ -20,25 +20,25 @@ SerialCommunication::~SerialCommunication() {}
 
 void SerialCommunication::writeStruct(char *ptr, int structLength) {
 	for (int i = 0; i < structLength; i++) {
-		Serial.write(ptr[i]);
+		Serial3.write(ptr[i]);
 	}
 }
 void SerialCommunication::writeStruct() {
 	char *ptr = (char*)&outPacket;
 	for (int i = 0; i < sizeof(outPacket); i++) {
-		Serial.write(ptr[i]);
+		Serial3.write(ptr[i]);
 	}
 }
 void SerialCommunication::writeACK() {
 	char *ptr = (char*)&ack;
 	for (int i = 0; i < 10; i++) {
-		Serial.write(ptr[i]);
+		Serial3.write(ptr[i]);
 	}
 }
 void SerialCommunication::writeNACK() {
 	char *ptr = (char*)&nack;
 	for (int i = 0; i < 10; i++) {
-		Serial.write(ptr[i]);
+		Serial3.write(ptr[i]);
 	}
 }
 
@@ -47,15 +47,15 @@ void SerialCommunication::readSerial() {
 	long Header = 0;
 	DataPacket temp;
 	//traps the header
-	while (Serial.available() > 0) {
+	while (Serial3.available() > 0) {
 		do {
-			incomingByte = Serial.read(); //Scheduler.delay(1);
+			incomingByte = Serial3.read(); //Scheduler.delay(1);
 			Header <<= 8;
 			Header = Header | (incomingByte & 0x000000FF);
 			Header &= 0x00FFFFFF;
 		} while (Header != HEADER_MAGIC);
 		//reads in packet length
-		incomingByte = Serial.read(); //Scheduler.delay(1);
+		incomingByte = Serial3.read(); //Scheduler.delay(1);
 		length = incomingByte;
 		char *ptr = (char *)malloc(length + 4);
 		//reads rest of packet
@@ -65,13 +65,14 @@ void SerialCommunication::readSerial() {
 		ptr[3] = length;
 
 		for (int i = 4; i < length + sizeof(Header); i++) {//for (int i = 0; i < (myPacket.length); i++) {
-			incomingByte = Serial.read(); //Scheduler.delay(1);
+			incomingByte = Serial3.read(); //Scheduler.delay(1);
 			*(ptr + i) = (char)incomingByte; //ptr[i] = (char)incomingByte;
 		}
 		switch (length) {
 		case DATAPACKET_SIZE:
 			memcpy((unsigned char *)&(temp), ptr, sizeof(temp));
-			//packets.push_back(temp); //remove this when checksum works
+			//packets.push_back(temp);
+			
 			checksum = CRC8(ptr, length + 3);
 			break;
 		case DATAPACKET_SIZE_2:
@@ -96,12 +97,12 @@ void SerialCommunication::readSerial() {
 			//send ack
 			myPacket = temp;
 			ack.data = temp.command;
-			writeACK();
+			//writeACK();
 		}
 		else {
 			//sends a non acknowledge, meaning the data should be retransmitted
 			nack.data = temp.command;
-			writeNACK();
+			//writeNACK();
 		}
 
 

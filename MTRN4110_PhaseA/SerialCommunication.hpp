@@ -10,7 +10,7 @@
 #include "WProgram.h"
 #endif
 //CODE HERE
-#define HEADER_MAGIC 0x00ABCDEF
+#define HEADER_MAGIC 0x000000AB
 #define DATAPACKET_SIZE 6
 #define DATAPACKET_SIZE_2 10
 #define DATAPACKET_SIZE_3 14

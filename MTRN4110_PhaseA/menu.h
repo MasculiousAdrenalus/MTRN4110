@@ -1,5 +1,5 @@
 #pragma once
-
+#include "types.h"
 
 typedef struct PAGE {
 	String line1;
@@ -22,6 +22,7 @@ public:
 	~MENU();
 	int Get_PageN();
 	void Print_Page(int pageN);
+	void Print_Maze(char maze);
 private:
 
 };

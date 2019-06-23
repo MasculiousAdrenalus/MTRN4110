@@ -2,13 +2,14 @@
 
 
 #include "menu.h"
+#include "types.h"
 
 MENU::MENU() {
 	for (int i = 0; i < 5; i++) {
 		this->thisBook.thisPage[i].pageN = i;
 	}
 
-	this->thisBook.thisPage[0].line1 = "Recieved maze:";
+	this->thisBook.thisPage[0].line1 = "Send AT:";
 	this->thisBook.thisPage[0].line2 = "|  |  |  |";
 	this->thisBook.thisPage[0].line3 = "|-- -- --|";
 	this->thisBook.thisPage[0].line4 = "|  |  |  |";
@@ -31,5 +32,11 @@ void MENU::Print_Page(int pageN) {
 
 	this->prevPage = this->currentPage;
 	this->currentPage = pageN;
-}
 
+	if (pageN == 0) {
+
+	}
+}
+void MENU::Print_Maze(char maze) {
+	//TUINT8 newMaze = (TUINT8)maze;
+}
