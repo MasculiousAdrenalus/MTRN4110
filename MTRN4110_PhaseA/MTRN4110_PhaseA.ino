@@ -11,15 +11,34 @@
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include "menu.h"
-
+#include "types.h"
 //DEFINES
 #define RxD 0
 #define TxD 1
 
 //GLOBALS
-SoftwareSerial BT(RxD, TxD);
+typedef struct {
+	long header = 0;
+	int command;
+	TUINT8 data;
+}packet;
+
+class HC06 {
+public:
+	packet pack;
+	char incomingMsg = 0;
+	bool flag = 0;
+	HC06() {};
+	~HC06() {};
+	void read();
+	void getMaze(char incomingMsg);
+	void echo(char incomingMsg, bool flag);
+};
+
+//SoftwareSerial BT(RxD, TxD);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 MENU menu;
+HC06 BT;
 
 //-------------------------------------------------------------------------------------
 void setup()
@@ -44,28 +63,30 @@ void setup()
 	lcd.setCursor(8, 0);
 	lcd.blink();
 }
-long Header = 0;
 //-------------------------------------------------------------------------------------
 void loop()
 {
-	char incomingMsg = 0;
-	bool flag = 0;
+	BT.read();
 
-	if (Serial3.available()) { 
-		incomingMsg = Serial3.read();
-		lcd.print(incomingMsg);
-		Serial.print(incomingMsg);
-		flag = 1;	
-		getMaze(incomingMsg);
-	}
 	//echos commands
-	echo(incomingMsg, flag);
+	BT.echo(BT.incomingMsg, BT.flag);
 
 
 	//delay(1);
 }
+
 //-------------------------------------------------------------------------------------
-void getMaze(char incomingMsg) {
+void HC06::read() {
+	if (Serial3.available()) {
+		BT.incomingMsg = Serial3.read();
+		lcd.print(BT.incomingMsg);
+		Serial.print(BT.incomingMsg);
+		BT.flag = 1;
+		BT.getMaze(BT.incomingMsg);
+	}
+}
+//-------------------------------------------------------------------------------------
+void HC06::getMaze(char incomingMsg) {
 
 	//Serial.print("(string)incomingByte:");
 	//Serial.println(incomingMsg);
@@ -74,19 +95,18 @@ void getMaze(char incomingMsg) {
 	if (incomingByte > 10) { incomingByte -= 7; }
 	//Serial.print("(Hex)incomingByte:");
 	//Serial.println(incomingByte, HEX);
-	Header <<= 4;
+	BT.pack.header <<= 4;
 	//Serial.print("(shifted)Header:");
 	//Serial.println(Header, HEX);
-	Header = Header | (incomingByte & 0x0000000F);
+	BT.pack.header = BT.pack.header | (incomingByte & 0x0000000F);
 	//Serial.print("(or'ed)Header:");
 	//Serial.println(Header, HEX);
-	Header &= 0x000000FF;
+	BT.pack.header &= 0x000000FF;
 	//Serial.print("(and'ed)Header:");
 	//Serial.println(Header, HEX);
 
 	//Expect the new maze byte message 
-	if (Header == HEADER_MAGIC) {
-
+	if (BT.pack.header == HEADER_MAGIC) {
 		menu.Print_Page(1);
 		lcd.setCursor(15, 0);
 		int incomingMsg = Serial3.read();
@@ -95,7 +115,7 @@ void getMaze(char incomingMsg) {
 	
 }
 //-------------------------------------------------------------------------------------
-void echo(char incomingMsg, bool flag) {
+void HC06::echo(char incomingMsg, bool flag) {
 	//usb read
 	if (Serial.available()) {
 		incomingMsg = Serial.read();
@@ -110,7 +130,7 @@ void echo(char incomingMsg, bool flag) {
 		//Serial.print("\n");
 		//menu.Print_Page(menu.Get_PageN());
 	}
-}
+}//-------------------------------------------------------------------------------------
 //uint32_t GetNumber()
 //{
 //	lcd.blink();
