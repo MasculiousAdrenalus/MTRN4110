@@ -28,7 +28,7 @@ public:
 	coords Get_Cursor();
 	int Get_PageN();
 	void Print_Page(int pageN);
-	void Print_Maze(packet pack);
+	void Print_Maze(TUINT8 maze);
 
 private:
 

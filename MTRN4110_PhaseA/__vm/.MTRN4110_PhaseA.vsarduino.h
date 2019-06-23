@@ -78,6 +78,7 @@ typedef void *__builtin_va_list;
 #define pgm_read_ptr(address_short)   short()
 
 #include "MTRN4110_PhaseA.ino"
+#include "Hadware.ino"
 #include "menu.ino"
 #endif
 #endif

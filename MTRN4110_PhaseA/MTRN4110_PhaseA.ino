@@ -5,42 +5,22 @@
 */
 #pragma pack(1)
 
-#include "SerialCommunication.hpp"
+
 #include <arduino.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-#include <SoftwareSerial.h>
 #include "menu.h"
 #include "types.h"
+#include "Hadware.h"
 //DEFINES
-#define RxD 0
-#define TxD 1
 
-char getHex(char ascii);
+//func defs
+
 //GLOBALS
-
-
-//-------------------------------------------------------------------------------------
-class HC06 {
-public:
-	packet pack;
-	char incomingMsg = 0;
-	char incomingByte = 0;
-	HC06();
-	~HC06() {};
-	void read();
-	void getMaze();
-	void echo();
-};
-HC06::HC06() {	
-
-}
-//-------------------------------------------------------------------------------------
-
-//SoftwareSerial BT(RxD, TxD);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 MENU menu;
 HC06 BT;
+
 
 //-------------------------------------------------------------------------------------
 void setup()
@@ -78,69 +58,7 @@ void loop()
 }
 
 //-------------------------------------------------------------------------------------
-void HC06::read() {
-	if (Serial3.available()) {
-		this->incomingMsg = Serial3.read();
-		lcd.print(incomingMsg);
-		Serial.print(incomingMsg);
-		getMaze();
-	}
-}
-//-------------------------------------------------------------------------------------
-void HC06::getMaze() {
 
-	//Serial.print("(string)incomingByte:");
-	//Serial.println(incomingMsg);
-	incomingByte = getHex(incomingMsg);
-	//incomingByte = incomingMsg - 48;
-	//if (incomingByte > 10) { incomingByte -= 7; }
-	//Serial.print("(Hex)incomingByte:");
-	//Serial.println(incomingByte, HEX);
-	pack.header <<= 4;
-	//Serial.print("(shifted)Header:");
-	//Serial.println(Header, HEX);
-	pack.header = pack.header | (incomingByte & 0x0000000F);
-	//Serial.print("(or'ed)Header:");
-	//Serial.println(Header, HEX);
-	pack.header &= 0x000000FF;
-	//Serial.print("(and'ed)Header:");
-	//Serial.println(Header, HEX);
-
-	//Expect the new maze byte message 
-	if (pack.header == HEADER_MAGIC) {
-		menu.Print_Page(1);
-		lcd.setCursor(15, 0);
-		pack.command = getHex(Serial3.read());
-		pack.dataH.full = getHex(Serial3.read());
-		pack.dataL.full = getHex(Serial3.read());
-		lcd.setCursor(0, 1);
-		lcd.print("dataH:");
-		lcd.print(pack.dataH.full);
-		lcd.setCursor(0, 2);
-		lcd.print("dataL:");
-		lcd.print(pack.dataL.full);
-		//option for different messages
-		menu.Print_Maze(pack);
-		
-	}
-	
-}
-//-------------------------------------------------------------------------------------
-void HC06::echo() {
-	//usb read
-	if (Serial.available()) {
-		incomingMsg = Serial.read();
-		Serial.write(incomingMsg);
-		Serial3.print(incomingMsg);
-		lcd.print(incomingMsg);
-	}
-}
-//-------------------------------------------------------------------------------------
-char getHex(char ascii) {
-	char hex = ascii - 48;
-	if (hex > 10) { hex -= 7; }
-	return hex;
-}
 //-------------------------------------------------------------------------------------
 
 

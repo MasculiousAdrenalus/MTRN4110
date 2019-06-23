@@ -50,60 +50,47 @@ void MENU::Print_Page(int pageN) {
 	}
 	Serial.print("\n");
 }
-void MENU::Print_Maze(packet pack) {
-	switch (pack.command)
-	{
-	case 0:
+void MENU::Print_Maze(TUINT8 maze) {
 		//decodes messages
-		if (pack.dataH.index.b0 == 1) {
-			lcd.print("a"); Serial.print("a");
+		if (maze.index.b0 == 1) {
+			//lcd.print("a"); Serial.print("a");
+			lcd.setCursor(3, 1);
+			lcd.print('|');
 		}
-		if (pack.dataH.index.b1 == 1) {
-			lcd.print("b"); Serial.print("b");
+		if (maze.index.b1 == 1) {
+			//lcd.print("b"); Serial.print("b");
+			lcd.setCursor(6, 1);
+			lcd.print('|');
 		}
-		if (pack.dataH.index.b2 == 1) {
-			lcd.print("c"); Serial.print("c");
+		if (maze.index.b2 == 1) {
+			//lcd.print("c"); Serial.print("c");
+			lcd.setCursor(1, 2);
+			lcd.print("--");
 		}
-		if (pack.dataH.index.b3 == 1) {
-			lcd.print("d"); Serial.print("d");
+		if (maze.index.b3 == 1) {
+			//lcd.print("d"); Serial.print("d");
+			lcd.setCursor(4, 2);
+			lcd.print("--");
 		}
-		if (pack.dataH.index.b4 == 1) {
-			lcd.print("e"); Serial.print("e");
+		if (maze.index.b4 == 1) {
+			//lcd.print("e"); Serial.print("e");
+			lcd.setCursor(7, 2);
+			lcd.print("--");
 		}
-		if (pack.dataH.index.b5 == 1) {
-			lcd.print("f"); Serial.print("f");
+		if (maze.index.b5 == 1) {
+			//lcd.print("f"); Serial.print("f");
+			lcd.setCursor(3, 3);
+			lcd.print('|');
 		}
-		if (pack.dataH.index.b6 == 1) {
-			lcd.print("g"); Serial.print("g");
+		if (maze.index.b6 == 1) {
+			//lcd.print("g"); Serial.print("g");
+			lcd.setCursor(6, 3);
+			lcd.print('|');
 		}
-		if (pack.dataH.index.b6 == 1) {
-			lcd.print("h"); Serial.print("h");
-		}
-		//
-		if (pack.dataL.index.b0 == 1) {
-			lcd.print("a"); Serial.print("a");
-		}
-		if (pack.dataL.index.b1 == 1) {
-			lcd.print("b"); Serial.print("b");
-		}
-		if (pack.dataL.index.b2 == 1) {
-			lcd.print("c"); Serial.print("c");
-		}
-		if (pack.dataL.index.b3 == 1) {
-			lcd.print("d"); Serial.print("d");
-		}
-		if (pack.dataL.index.b4 == 1) {
-			lcd.print("e"); Serial.print("e");
-		}
-		if (pack.dataL.index.b5 == 1) {
-			lcd.print("f"); Serial.print("f");
-		}
-		if (pack.dataL.index.b6 == 1) {
-			lcd.print("g"); Serial.print("g");
-		}
-		if (pack.dataL.index.b6 == 1) {
-			lcd.print("h"); Serial.print("h");
-		}
-		break;
-	}
+		//not used
+		//if (maze.index.b7 == 1) {
+		//	//lcd.print("h"); Serial.print("h");
+		//	//lcd.setCursor(8, 1);
+		//	//lcd.print('|');
+		//}
 }
