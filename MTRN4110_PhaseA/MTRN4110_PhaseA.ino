@@ -16,6 +16,7 @@
 #define RxD 0
 #define TxD 1
 
+char getHex(char ascii);
 //GLOBALS
 typedef struct {
 	long header = 0;
@@ -23,17 +24,22 @@ typedef struct {
 	TUINT8 data;
 }packet;
 
+//-------------------------------------------------------------------------------------
 class HC06 {
 public:
 	packet pack;
 	char incomingMsg = 0;
-	bool flag = 0;
-	HC06() {};
+	char incomingByte = 0;
+	HC06();
 	~HC06() {};
 	void read();
-	void getMaze(char incomingMsg);
-	void echo(char incomingMsg, bool flag);
+	void getMaze();
+	void echo();
 };
+HC06::HC06() {	
+
+}
+//-------------------------------------------------------------------------------------
 
 //SoftwareSerial BT(RxD, TxD);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
@@ -69,7 +75,7 @@ void loop()
 	BT.read();
 
 	//echos commands
-	BT.echo(BT.incomingMsg, BT.flag);
+	BT.echo();
 
 
 	//delay(1);
@@ -78,21 +84,20 @@ void loop()
 //-------------------------------------------------------------------------------------
 void HC06::read() {
 	if (Serial3.available()) {
-		BT.incomingMsg = Serial3.read();
-		lcd.print(BT.incomingMsg);
-		Serial.print(BT.incomingMsg);
-		BT.flag = 1;
-		BT.getMaze(BT.incomingMsg);
+		this->incomingMsg = Serial3.read();
+		lcd.print(incomingMsg);
+		Serial.print(incomingMsg);
+		getMaze();
 	}
 }
 //-------------------------------------------------------------------------------------
-void HC06::getMaze(char incomingMsg) {
+void HC06::getMaze() {
 
 	//Serial.print("(string)incomingByte:");
 	//Serial.println(incomingMsg);
-	char incomingByte = 0;
-	incomingByte = incomingMsg - 48;
-	if (incomingByte > 10) { incomingByte -= 7; }
+	incomingByte = getHex(incomingMsg);
+	//incomingByte = incomingMsg - 48;
+	//if (incomingByte > 10) { incomingByte -= 7; }
 	//Serial.print("(Hex)incomingByte:");
 	//Serial.println(incomingByte, HEX);
 	BT.pack.header <<= 4;
@@ -109,13 +114,28 @@ void HC06::getMaze(char incomingMsg) {
 	if (BT.pack.header == HEADER_MAGIC) {
 		menu.Print_Page(1);
 		lcd.setCursor(15, 0);
-		int incomingMsg = Serial3.read();
-		Serial.print("\n");
+		BT.pack.command = getHex(Serial3.read());
+		BT.pack.data.full = getHex(Serial3.read());
+
+		//option for different messages
+		switch (BT.pack.command)
+		{
+		case 0:
+			//lcd.print("qoobuuuuu!"); Serial.print("qoobuuuuu!");
+			//decodes messages
+			if (BT.pack.data.index.b0 == 1) {
+				lcd.print("fuckyeah!"); Serial.print("fuckyeah!");
+			}
+			break;
+		default: lcd.print("maze read error"); Serial.print("maze read error");
+			break;
+		}
+		
 	}
 	
 }
 //-------------------------------------------------------------------------------------
-void HC06::echo(char incomingMsg, bool flag) {
+void HC06::echo() {
 	//usb read
 	if (Serial.available()) {
 		incomingMsg = Serial.read();
@@ -123,14 +143,16 @@ void HC06::echo(char incomingMsg, bool flag) {
 		Serial3.print(incomingMsg);
 		lcd.print(incomingMsg);
 	}
-	//bluetooth echo
-	if (flag) {
-		//incomingByte = Serial3.read();
+}
+//-------------------------------------------------------------------------------------
+char getHex(char ascii) {
+	char hex = ascii - 48;
+	if (hex > 10) { hex -= 7; }
+	return hex;
+}
+//-------------------------------------------------------------------------------------
 
-		//Serial.print("\n");
-		//menu.Print_Page(menu.Get_PageN());
-	}
-}//-------------------------------------------------------------------------------------
+
 //uint32_t GetNumber()
 //{
 //	lcd.blink();

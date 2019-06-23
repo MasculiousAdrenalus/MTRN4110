@@ -13,15 +13,18 @@ MENU::MENU() {
 	this->thisBook.thisPage[0].line2 = "|  |  |  |";
 	this->thisBook.thisPage[0].line3 = "|-- -- --|";
 	this->thisBook.thisPage[0].line4 = "|  |  |  |";
-
+	this->thisBook.thisPage[0].cursor.x = 8;
+	this->thisBook.thisPage[0].cursor.y = 0;
 	this->thisBook.thisPage[1].line1 = "Recieved maze:  ";
 	this->thisBook.thisPage[1].line2 = "|        |";
 	this->thisBook.thisPage[1].line3 = "|        |";
 	this->thisBook.thisPage[1].line4 = "|        |";
+	this->thisBook.thisPage[0].cursor.x = 12;
+	this->thisBook.thisPage[0].cursor.y = 0;
 }
 
 MENU::~MENU() {}
-
+coords MENU::Get_Cursor() { return thisBook.thisPage->cursor; };
 int MENU::Get_PageN() { return this->currentPage; }
 
 void MENU::Print_Page(int pageN) {
@@ -45,6 +48,7 @@ void MENU::Print_Page(int pageN) {
 	if (pageN == 0) {
 
 	}
+	Serial.print("\n");
 }
 void MENU::Print_Maze(char maze) {
 	//TUINT8 newMaze = (TUINT8)maze;
