@@ -6,6 +6,7 @@ typedef struct PAGE {
 	String line2;
 	String line3;
 	String line4;
+	int lineX, lineY;
 	int pageN;
 } page;
 
