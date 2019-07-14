@@ -81,8 +81,8 @@ if bn==1,
 %   MED2=MyUnsharp(RGB,5,3);
 %   fig(end+1)=MyFigure(); MyImShow(MED2);
 
-  BLF=MyBilateral(RGB,3,1);
-  fig(end+1)=MyFigure(); MyImShow(BLF);
+%   BLF=MyBilateral(RGB,3,1);
+%   fig(end+1)=MyFigure(); MyImShow(BLF);
 
   
 %   SEG1=MySimpleTreshold(RGB);
