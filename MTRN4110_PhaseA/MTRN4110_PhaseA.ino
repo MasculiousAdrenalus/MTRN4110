@@ -29,7 +29,8 @@ void setup()
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
-
+  lcd.print("test, world!");
+  delay(500);
 	// SERIAL COMMUNICATIONS //
 	// usb
 	Serial.begin(115200);

@@ -15,11 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Hadware.ino">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="menu.ino">
+      <Filter>Source Files</Filter>
+    </None>
     <None Include="MTRN4110_PhaseA.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.MTRN4110_PhaseA.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SerialCommunication.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hadware.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SerialCommunication.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
