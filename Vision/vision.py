@@ -12,8 +12,8 @@
 
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
 # set plot to show inside jupyter notebook.
 # delete the line below when run in python.%matplotlib inline
 
@@ -49,18 +49,18 @@ if maze_orig is not None:
     # # fig is a handle to the figure, ax1 is handle to plot no 1, ax2 is handle to plot no 2.
     fig, (ax1, ax2) = plt.subplots(figsize=(10, 8), ncols=2)
 
-    # ax1.imshow(maze_orig)
-    # ax1.set_title("BGR")
-    # # ax1.show()
-    # img_rgb = cv2.cvtColor(maze_orig, cv2.COLOR_BGR2RGB)
+    ax1.imshow(maze_orig)
+    ax1.set_title("bgr")
+    # ax1.show()
+    img_rgb = cv2.cvtcolor(maze_orig, cv2.color_bgr2rgb)
     fig.show(img_rgb)
 
-    # # plt.subplot(2,2)
-    # ax2.imshow(img_rgb)
-    # ax2.set_title("RGB")
-    # #ax2.show()
-    # fig.canvas.draw()
-    # plt.draw()
+    # plt.subplot(2,2)
+    ax2.imshow(img_rgb)
+    ax2.set_title("rgb")
+    #ax2.show()
+    fig.canvas.draw()
+    plt.draw()
 else:
     assert("Loading error");
     print('Loading error!')
