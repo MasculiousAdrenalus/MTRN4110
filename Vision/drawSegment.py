@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #Read gray image
-img = cv2.imread("maze.jpg",0)
+img = cv2.imread("maze1.png",0)
 
 img_blurBilat = cv2.bilateralFilter(img,8,75,150)
 abs_img_blurBilat = cv2.convertScaleAbs(img_blurBilat)
