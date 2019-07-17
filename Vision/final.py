@@ -104,7 +104,8 @@ class EncodeMaze:
     pt1 = Cords(0,0)
     pt2 = Cords(0,0) #//rectangular section to check
     var_x = 25 #mm
-    var_y = 25
+    var_y1 = 50
+    var_y2 = 200
     def __init__(self, img, maze_x, maze_y, cell_x, cell_y):
         self.img = img
         self.maze = Cords(maze_x,maze_y)
@@ -115,13 +116,14 @@ class EncodeMaze:
         for x in range(1,self.maze.x):
             a=250*x-self.var_x
             b=250*x+self.var_x
-            for y in range(1,self.maze.y):
-                c=250*y-self.var_y
-                d=250*y+self.var_y
+            for y in range(0,self.maze.y):
+                c=250*y+self.var_y1
+                d=250*y+self.var_y2
                 #
-                print('x',+x)
-                print('y',+y)
-                print(a,b,c,d)
+                print('x,y')
+                print(x,y)
+                print('point1:',a,c)
+                print('point2:',b,d)
                 cv2.rectangle(self.img, (a,c), (b,d), (255,255,255), 2)
                 for i in range(a,b):
                     for j in range(c,d):
