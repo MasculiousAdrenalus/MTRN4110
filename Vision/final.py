@@ -54,6 +54,8 @@ for i in range(0, 3):
 
 # merge the channels
 image_channels = np.concatenate((image_channels[0], image_channels[1], image_channels[2]), axis=2)
+
+# image_channels = cv2.resize(image_channels,(960,540))
 # cv2.imshow('img',image_channels)
 image_channels_b = ~image_channels
 image_channels_b*= np.array((0,0,1),np.uint8)
@@ -92,6 +94,36 @@ out2 = np.bitwise_or(out1,img_crop_color)
 out3 = cv2.resize(out1,(960,540))
 cv2.imshow('img',out3)
 #---------------------------------------------------------------------------------------------
+class Cords:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class EncodeMaze:
+    maze_x = 9 #//cells
+    maze_y= 5
+    map_size = Cords(0,0)
+    pt1 = Cords(0,0)
+    pt2 = Cords(0,0) #//rectangular section to check
+    cell_x = 250 # //mm
+    cell_y = 250
+    var_x = 25 #mm
+    var_y = 25
+    def __init__(self):
+        self.map_size.x = self.maze_x*self.cell_x
+        self.map_size.y = self.maze_x*self.cell_y
+    def getMap(self):
+        for x in range(self.maze_x) -1:
+            a=250*x-self.var_x
+            b=250*x+self.var_x
+            for y in range(self.maze_y -1):
+                a=250*x-self.var_x
+                b=250*x+self.var_x
+                #
+                for i in range(a,b):
+                    for j in range(c,d):
+                        pass
+
 
 #---------------------------------------------------------------------------------------------
 # lsd = cv2.createLineSegmentDetector(0)
