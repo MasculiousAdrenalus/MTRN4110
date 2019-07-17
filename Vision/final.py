@@ -91,8 +91,8 @@ vertical = cv2.dilate(vertical, verticalStructure)
 out1 = np.bitwise_or(horizontal, vertical)
 out2 = np.bitwise_or(out1,img_crop_color)
 
-out3 = cv2.resize(out1,(960,540))
-cv2.imshow('img',out3)
+# out3 = cv2.resize(out1,(960,540))
+# cv2.imshow('img',out3)
 #---------------------------------------------------------------------------------------------
 class Cords:
     def __init__(self, x, y):
@@ -100,29 +100,37 @@ class Cords:
         self.y = y
 
 class EncodeMaze:
-    maze_x = 9 #//cells
-    maze_y= 5
     map_size = Cords(0,0)
     pt1 = Cords(0,0)
     pt2 = Cords(0,0) #//rectangular section to check
-    cell_x = 250 # //mm
-    cell_y = 250
     var_x = 25 #mm
     var_y = 25
-    def __init__(self):
-        self.map_size.x = self.maze_x*self.cell_x
-        self.map_size.y = self.maze_x*self.cell_y
+    def __init__(self, img, maze_x, maze_y, cell_x, cell_y):
+        self.img = img
+        self.maze = Cords(maze_x,maze_y)
+        self.cell = Cords(cell_x, cell_y)
+        self.map_size.x = self.maze.x*self.cell.x
+        self.map_size.y = self.maze.y*self.cell.y
     def getMap(self):
-        for x in range(self.maze_x) -1:
+        for x in range(1,self.maze.x):
             a=250*x-self.var_x
             b=250*x+self.var_x
-            for y in range(self.maze_y -1):
-                a=250*x-self.var_x
-                b=250*x+self.var_x
+            for y in range(1,self.maze.y):
+                c=250*y-self.var_y
+                d=250*y+self.var_y
                 #
+                print('x',+x)
+                print('y',+y)
+                print(a,b,c,d)
+                cv2.rectangle(self.img, (a,c), (b,d), (255,255,255), 2)
                 for i in range(a,b):
                     for j in range(c,d):
                         pass
+        self.img = cv2.resize(self.img,(960,540))
+        cv2.imshow('img',self.img)
+
+maze = EncodeMaze(out1, 9, 5, 250, 250)
+maze.getMap()
 
 
 #---------------------------------------------------------------------------------------------
