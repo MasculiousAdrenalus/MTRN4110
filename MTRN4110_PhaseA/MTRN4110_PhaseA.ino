@@ -29,14 +29,14 @@ void setup()
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
-
+	lcd.print("qwerty");
 	// SERIAL COMMUNICATIONS //
 	// usb
-	Serial.begin(115200);
+	Serial.begin(9600);
 	delay(500);
 	Serial.println("Connection Started");
 	// bluetooth
-	Serial3.begin(115200);
+	Serial3.begin(9600);
 	delay(500);
 	Serial3.print("AT");
 
