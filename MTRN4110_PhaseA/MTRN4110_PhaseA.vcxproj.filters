@@ -15,6 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Hadware.ino">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="menu.ino">
+      <Filter>Source Files</Filter>
+    </None>
     <None Include="MTRN4110_PhaseA.ino" />
     <None Include="Hadware.ino">
       <Filter>Source Files</Filter>
@@ -30,14 +36,28 @@
     <ClInclude Include="SerialCommunication.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> 4e89cf79978dd5f16284b8cdb924c10174812735
     <ClInclude Include="Hadware.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SerialCommunication.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+>>>>>>> 4e89cf79978dd5f16284b8cdb924c10174812735
   </ItemGroup>
 </Project>

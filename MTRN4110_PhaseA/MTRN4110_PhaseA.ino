@@ -29,7 +29,12 @@ void setup()
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
+<<<<<<< HEAD
 	lcd.print("qwerty");
+=======
+  lcd.print("test, world!");
+  delay(500);
+>>>>>>> 4e89cf79978dd5f16284b8cdb924c10174812735
 	// SERIAL COMMUNICATIONS //
 	// usb
 	Serial.begin(9600);
