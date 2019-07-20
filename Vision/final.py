@@ -1,98 +1,114 @@
 import cv2
 import numpy as np
+import serial
+import time
 from matplotlib import pyplot as plt
 
-#Read gray image
+def main():
+    print("main code")
+    #Read gray image
+    img_col = cv2.imread("imgs/maze3.png")
+    img_gray = cv2.imread("imgs/maze3.png",0)
+    [out1, out2] = get_Convolution(img_col, img_gray)
+    maze = EncodeMaze(out1, 9, 5, 250, 250)
+    maze.getMap()
 
-img_col = cv2.imread("imgs/maze3.png")
-img_gray = cv2.imread("imgs/maze3.png",0)
-#crop
-resize_col = cv2.resize(img_col,(960,540))
-resize_gray = cv2.resize(img_gray,(960,540))
-crop = resize_col[15:536 ,7:939]
 
-rows,cols,ch = crop.shape
-pts1 = np.float32([[0,0],[0,517],[927,0],[927,517]])
-pts2 = np.float32([[0,0],[0,1250],[2250,0],[2250,1250]])
-M = cv2.getPerspectiveTransform(pts1,pts2)
-img_crop_color = cv2.warpPerspective(crop,M,(2250,1250))
-img_crop_gray = cv2.cvtColor(img_crop_color,cv2.COLOR_BGR2GRAY)
+    # Q for quit
+    while(1):
+        key = cv2.waitKey(0) & 0xFF
+        if key == ord("q"):
+            break
+        cv2.destroyAllWindows()
+def get_Convolution(img_col, img_gray):
+    #crop
+    resize_col = cv2.resize(img_col,(960,540))
+    resize_gray = cv2.resize(img_gray,(960,540))
+    crop = resize_col[15:536 ,7:939]
 
-#OTSU
-ret, thresh = cv2.threshold(img_crop_gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-# th, bw = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    rows,cols,ch = crop.shape
+    pts1 = np.float32([[0,0],[0,517],[927,0],[927,517]])
+    pts2 = np.float32([[0,0],[0,1250],[2250,0],[2250,1250]])
+    M = cv2.getPerspectiveTransform(pts1,pts2)
+    img_crop_color = cv2.warpPerspective(crop,M,(2250,1250))
+    img_crop_gray = cv2.cvtColor(img_crop_color,cv2.COLOR_BGR2GRAY)
 
-# #resize
-# img_crop_color = cv2.resize(img_crop_color,(960,540))
-# thresh = cv2.resize(thresh,(960,540))
+    #OTSU
+    ret, thresh = cv2.threshold(img_crop_gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    # th, bw = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
-#---------------------------------------------------------------------------------------------
-#morph
-morph = img_crop_color.copy()
+    # #resize
+    # img_crop_color = cv2.resize(img_crop_color,(960,540))
+    # thresh = cv2.resize(thresh,(960,540))
 
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
-morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
+    #---------------------------------------------------------------------------------------------
+    #morph
+    morph = img_crop_color.copy()
 
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
+    morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
 
-# take morphological gradient
-gradient_image = cv2.morphologyEx(morph, cv2.MORPH_GRADIENT, kernel)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
 
-#grayimg = cv2.cvtColor(gradient_image, cv2.COLOR_BGR2GRAY)
-#ret, thresh = cv2.threshold(grayimg,0,255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
+    # take morphological gradient
+    gradient_image = cv2.morphologyEx(morph, cv2.MORPH_GRADIENT, kernel)
 
-# split the gradient image into channels
-image_channels = np.split(np.asarray(gradient_image), 3, axis=2)
+    #grayimg = cv2.cvtColor(gradient_image, cv2.COLOR_BGR2GRAY)
+    #ret, thresh = cv2.threshold(grayimg,0,255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
 
-channel_height, channel_width, _ = image_channels[0].shape
+    # split the gradient image into channels
+    image_channels = np.split(np.asarray(gradient_image), 3, axis=2)
 
-# apply Otsu threshold to each channel
-for i in range(0, 3):
-    _,image_channels[i] = cv2.threshold(~image_channels[i], 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY)
-    image_channels[i] = np.reshape(image_channels[i], newshape=(channel_height, channel_width, 1))
+    channel_height, channel_width, _ = image_channels[0].shape
 
-# merge the channels
-image_channels = np.concatenate((image_channels[0], image_channels[1], image_channels[2]), axis=2)
+    # apply Otsu threshold to each channel
+    for i in range(0, 3):
+        _,image_channels[i] = cv2.threshold(~image_channels[i], 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY)
+        image_channels[i] = np.reshape(image_channels[i], newshape=(channel_height, channel_width, 1))
 
-# image_channels = cv2.resize(image_channels,(960,540))
-# cv2.imshow('img',image_channels)
-image_channels_b = ~image_channels
-image_channels_b*= np.array((0,0,1),np.uint8)
-out = np.bitwise_or(img_crop_color, image_channels_b)
+    # merge the channels
+    image_channels = np.concatenate((image_channels[0], image_channels[1], image_channels[2]), axis=2)
 
-# info = np.iinfo(gradient_image.dtype) # Get the information of the incoming image type
-# gradient_image = gradient_image.astype(np.float64) / info.max # normalize the data to 0 - 1
-# gradient_image = 255 * gradient_image # Now scale by 255
-# gradient_image = gradient_image.astype(np.uint8)
+    # image_channels = cv2.resize(image_channels,(960,540))
+    # cv2.imshow('img',image_channels)
+    image_channels_b = ~image_channels
+    image_channels_b*= np.array((0,0,1),np.uint8)
+    out = np.bitwise_or(img_crop_color, image_channels_b)
 
-cv2.rectangle(image_channels_b, (0,0), (2250,1250), (0,0,255), 15)
-display_img = image_channels_b
+    # info = np.iinfo(gradient_image.dtype) # Get the information of the incoming image type
+    # gradient_image = gradient_image.astype(np.float64) / info.max # normalize the data to 0 - 1
+    # gradient_image = 255 * gradient_image # Now scale by 255
+    # gradient_image = gradient_image.astype(np.uint8)
 
-horizontal = np.copy(display_img)
+    cv2.rectangle(image_channels_b, (0,0), (2250,1250), (0,0,255), 15)
+    display_img = image_channels_b
 
-cols = horizontal.shape[1]
-horizontal_size = cols // 30
+    horizontal = np.copy(display_img)
 
-horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size,1))
-horizontal = cv2.erode(horizontal, horizontalStructure)
-horizontal = cv2.dilate(horizontal, horizontalStructure)
-# cv2.imshow('img',horizontal)
-vertical = np.copy(display_img)
-# Specify size on vertical axis
-rows = vertical.shape[0]
-verticalsize = rows // 30
-# Create structure element for extracting vertical lines through morphology operations
-verticalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (1, verticalsize))
-# Apply morphology operations
-vertical = cv2.erode(vertical, verticalStructure)
-vertical = cv2.dilate(vertical, verticalStructure)
+    cols = horizontal.shape[1]
+    horizontal_size = cols // 30
 
-out1 = np.bitwise_or(horizontal, vertical)
-out2 = np.bitwise_or(out1,img_crop_color)
+    horizontalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size,1))
+    horizontal = cv2.erode(horizontal, horizontalStructure)
+    horizontal = cv2.dilate(horizontal, horizontalStructure)
+    # cv2.imshow('img',horizontal)
+    vertical = np.copy(display_img)
+    # Specify size on vertical axis
+    rows = vertical.shape[0]
+    verticalsize = rows // 30
+    # Create structure element for extracting vertical lines through morphology operations
+    verticalStructure = cv2.getStructuringElement(cv2.MORPH_RECT, (1, verticalsize))
+    # Apply morphology operations
+    vertical = cv2.erode(vertical, verticalStructure)
+    vertical = cv2.dilate(vertical, verticalStructure)
 
-# out3 = cv2.resize(out1,(960,540))
-# cv2.imshow('img',out3)
+    out1 = np.bitwise_or(horizontal, vertical)
+    out2 = np.bitwise_or(out1,img_crop_color)
+    return [out1,out2]
+    # out3 = cv2.resize(out1,(960,540))
+    # cv2.imshow('img',out3)
+
 #---------------------------------------------------------------------------------------------
 class Cords:
     def __init__(self, x, y):
@@ -113,10 +129,13 @@ class EncodeMaze:
         self.map_size.x = self.maze.x*self.cell.x
         self.map_size.y = self.maze.y*self.cell.y
     def getMap(self):
+        first= np.uint64(0)
+        first= np.uint64(0)
+
         flag_horiz =0
         flag_vert =0
 
-        #traps vertical |||||||||||||||||||||||||||||||||||||||||||||||||||||
+        #traps vertical |||||||||||||||||||||||||
         print("\t\t ---Vertical Walls---")
         for x in range(1,self.maze.x):
             a=250*x-self.var_x
@@ -128,17 +147,17 @@ class EncodeMaze:
                 # print('x,y')
                 # print(x,y)
                 cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
-                for i in range(a,b):
+                for i in range(c,d):
                     if (flag_horiz == 0):
-                        for j in range(c,d):
-                            px = self.img[j,i,2]
+                        for j in range(a,b):
+                            px = self.img[i,j,2]
                             if px > 0:
                                 print('WALL',x,y)
                                 flag_horiz = 1
                                 break
                     else: 
                         break
-        #traps horizontal -----------------------------------------
+        #traps horizontal ------------------------
         print("\t\t ---Horizontal Walls---")
         for x in range(0,self.maze.x):
             e=250*(x)+50
@@ -147,6 +166,7 @@ class EncodeMaze:
                 flag_horiz = 0
                 g=250*(y)-25
                 h=250*(y)+25
+                # print(x,y)
                 cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
                 for i in range(e,f):
                     if (flag_horiz == 0):
@@ -164,24 +184,7 @@ class EncodeMaze:
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
 
-maze = EncodeMaze(out1, 9, 5, 250, 250)
-maze.getMap()
-
 
 #---------------------------------------------------------------------------------------------
-# lsd = cv2.createLineSegmentDetector(0)
-# #Detect lines in the image
-# lines = lsd.detect(gradient_image)[0] #Position 0 of the returned tuple are the detected lines
-# #Draw detected lines in the image
-# drawn_img = lsd.drawSegments(img_crop_color,lines)
-# for i in range(0,len(lines)):
-#     print(lines[i][0])
-# #Show image
-# # cv2.imshow("LSD",drawn_img )
+if __name__ == "__main__":main()
 #---------------------------------------------------------------------------------------------
-while(1):
-    # DETECTS KEY INTERUPTS
-    key = cv2.waitKey(0) & 0xFF
-    if key == ord("q"):
-        break
-    cv2.destroyAllWindows()
