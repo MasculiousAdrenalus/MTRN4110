@@ -106,8 +106,6 @@ class EncodeMaze:
     var_x = 25 #mm
     var_y1 = 50
     var_y2 = 200
-    flag_x = 0
-    flag_y = 0
     def __init__(self, img, maze_x, maze_y, cell_x, cell_y):
         self.img = img
         self.maze = Cords(maze_x,maze_y)
@@ -115,40 +113,54 @@ class EncodeMaze:
         self.map_size.x = self.maze.x*self.cell.x
         self.map_size.y = self.maze.y*self.cell.y
     def getMap(self):
+        flag_horiz =0
+        flag_vert =0
+
+        #traps vertical |||||||||||||||||||||||||||||||||||||||||||||||||||||
+        print("\t\t ---Vertical Walls---")
         for x in range(1,self.maze.x):
             a=250*x-self.var_x
             b=250*x+self.var_x
-
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             for y in range(0,self.maze.y):
-                self.flag_x = 0
+                flag_horiz = 0
                 c=250*y+self.var_y1
                 d=250*y+self.var_y2
-                #
-                print('x,y')
-                print(x,y)
-                print('point1:',a,c)
-                print('point2:',b,d)
-                # cv2.rectangle(self.img, (a,c), (b,d), (255,255,255), 2)
-                # if (self.flag_x == 0):
+                # print('x,y')
+                # print(x,y)
+                cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
                 for i in range(a,b):
-                    if (self.flag_x == 0):
+                    if (flag_horiz == 0):
                         for j in range(c,d):
                             px = self.img[j,i,2]
                             if px > 0:
-                                print('found red')
-                                print('px = ', px)
-                                self.flag_x = 1
+                                print('WALL',x,y)
+                                flag_horiz = 1
                                 break
-                    else:
-                        print('break0') 
+                    else: 
                         break
-                # else:
-                #     print('break 3') 
-                #     break
-                # else:
-                #     print('break 4') 
-                #     break
+        #traps horizontal -----------------------------------------
+        print("\t\t ---Horizontal Walls---")
+        for x in range(0,self.maze.x):
+            e=250*(x)+50
+            f=250*(x)+200
+            for y in range(1,self.maze.y):
+                flag_horiz = 0
+                g=250*(y)-25
+                h=250*(y)+25
+                cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
+                for i in range(e,f):
+                    if (flag_horiz == 0):
+                        for j in range(g,h):
+                            px = self.img[j,i,2]
+                            if px > 0:
+                                print('WALL',x,y)
+                                flag_horiz = 1
+                                break
+                    else: 
+                        break       
+
+
+
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
 
