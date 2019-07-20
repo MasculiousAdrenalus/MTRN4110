@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 
 #Read gray image
 
-img_col = cv2.imread("maze3.png")
-img_gray = cv2.imread("maze3.png",0)
+img_col = cv2.imread("imgs/maze3.png")
+img_gray = cv2.imread("imgs/maze3.png",0)
 #crop
 resize_col = cv2.resize(img_col,(960,540))
 resize_gray = cv2.resize(img_gray,(960,540))
@@ -106,6 +106,8 @@ class EncodeMaze:
     var_x = 25 #mm
     var_y1 = 50
     var_y2 = 200
+    flag_x = 0
+    flag_y = 0
     def __init__(self, img, maze_x, maze_y, cell_x, cell_y):
         self.img = img
         self.maze = Cords(maze_x,maze_y)
@@ -116,7 +118,10 @@ class EncodeMaze:
         for x in range(1,self.maze.x):
             a=250*x-self.var_x
             b=250*x+self.var_x
+
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             for y in range(0,self.maze.y):
+                self.flag_x = 0
                 c=250*y+self.var_y1
                 d=250*y+self.var_y2
                 #
@@ -124,10 +129,26 @@ class EncodeMaze:
                 print(x,y)
                 print('point1:',a,c)
                 print('point2:',b,d)
-                cv2.rectangle(self.img, (a,c), (b,d), (255,255,255), 2)
+                # cv2.rectangle(self.img, (a,c), (b,d), (255,255,255), 2)
+                # if (self.flag_x == 0):
                 for i in range(a,b):
-                    for j in range(c,d):
-                        pass
+                    if (self.flag_x == 0):
+                        for j in range(c,d):
+                            px = self.img[j,i,2]
+                            if px > 0:
+                                print('found red')
+                                print('px = ', px)
+                                self.flag_x = 1
+                                break
+                    else:
+                        print('break0') 
+                        break
+                # else:
+                #     print('break 3') 
+                #     break
+                # else:
+                #     print('break 4') 
+                #     break
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
 
