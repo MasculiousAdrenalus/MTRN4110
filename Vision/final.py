@@ -14,10 +14,7 @@ def main():
     [out1, out2] = get_Convolution(img_col, img_gray)
     maze = EncodeMaze(out1, 9, 5, 250, 250)
     maze.getMap()
-    
-    ard.flush()
-    time.sleep(3)
-    ard.write(b'lololololol')
+
 
     # Q for quit
     while(1):
@@ -201,6 +198,18 @@ class EncodeMaze:
         print(hex(second))
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
+
+        
+        time.sleep(3)
+        ard.flush()
+        ard.write(b'transmission started')     
+        ard.write(b'first')
+
+        while (i < 8):
+            # ard.flush()
+            ard.write(b'loops')
+            time.sleep(1)
+            i+=1
         
         
 #---------------------------------------------------------------------------------------------
