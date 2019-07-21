@@ -204,10 +204,12 @@ class EncodeMaze:
         ard.flush()
         ard.write(b'transmission started')     
         ard.write(b'first')
-
+        
+        i=0
         while (i < 8):
-            # ard.flush()
-            ard.write(b'loops')
+            ard.flush()
+            print('here')
+            ard.write(b'________loops')
             time.sleep(1)
             i+=1
         

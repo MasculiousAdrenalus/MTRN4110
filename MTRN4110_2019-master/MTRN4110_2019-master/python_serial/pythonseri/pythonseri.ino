@@ -19,9 +19,9 @@ void setup() {
 
 void loop()
 {
-    while(!Serial.available());
+//    while(!Serial.available());
     
-    while (Serial.available() > 0) {
+    if (Serial.available() > 0) {
     //Serial.println("Arduino: ");
     //Serial.write(Serial.read());
     incomingByte = Serial.read();
