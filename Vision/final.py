@@ -3,8 +3,8 @@ import numpy as np
 import serial
 import time
 from matplotlib import pyplot as plt
-#port = '24'
-#ard = serial.Serial(port,9600,timeout=5)
+port = 'COM3' 
+ard = serial.Serial(port,9600,timeout=10)
 
 def main():
     print("main code")
@@ -14,7 +14,10 @@ def main():
     [out1, out2] = get_Convolution(img_col, img_gray)
     maze = EncodeMaze(out1, 9, 5, 250, 250)
     maze.getMap()
-
+    
+    ard.flush()
+    time.sleep(3)
+    ard.write(b'lololololol')
 
     # Q for quit
     while(1):
@@ -124,27 +127,29 @@ class EncodeMaze:
     var_x = 25 #mm
     var_y1 = 50
     var_y2 = 200
+    #------------------------------------------------------------
     def __init__(self, img, maze_x, maze_y, cell_x, cell_y):
         self.img = img
         self.maze = Cords(maze_x,maze_y)
         self.cell = Cords(cell_x, cell_y)
         self.map_size.x = self.maze.x*self.cell.x
         self.map_size.y = self.maze.y*self.cell.y
+    #------------------------------------------------------------    
     def getMap(self):
-        first= 171 #np.uint64(0xAB)
-        second= np.uint64(0xCD)
+        first= 0xab1 #np.uint64(0xAB)
+        second= 0xab2 
         flag =0
         data = []
 
-        #traps vertical |||||||||||||||||||||||||
+        #traps vertical
         print("\t\t ---Vertical Walls---")
         for x in range(1,self.maze.x):
-            a=250*x-self.var_x
-            b=250*x+self.var_x
+            a=250*x-25
+            b=250*x+25
             for y in range(0,self.maze.y):
                 flag = 0
-                c=250*y+self.var_y1
-                d=250*y+self.var_y2
+                c=250*y+50
+                d=250*y+200
                 # print('x,y')
                 # print(x,y)
                 cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
@@ -154,11 +159,17 @@ class EncodeMaze:
                             px = self.img[i,j,2]
                             if px > 0:
                                 print('WALL',x,y)
+                                second <<= 1
+                                second |= 1
+                                data.append(1)
                                 flag = 1
                                 break
                     else: 
                         break
-        #traps horizontal ------------------------
+                if flag ==0:
+                    second <<= 1
+                    data.append(0)
+        #traps horizontal
         print("\t\t ---Horizontal Walls---")
         for x in range(0,self.maze.x):
             e=250*(x)+50
@@ -173,7 +184,7 @@ class EncodeMaze:
                         for j in range(g,h):
                             px = self.img[j,i,2]
                             if px > 0:
-                                print(1)
+                                print('WALL',x,y)
                                 flag = 1
                                 first <<= 1
                                 first |= 1
@@ -181,15 +192,13 @@ class EncodeMaze:
                                 break
                             else:
                                 pass
-                    # else:
-                    #     break
-
                 if flag ==0:
-                    print(0)
                     first <<= 1
                     data.append(0)     
+        #------------------------------------------------------------
 
         print(hex(first))
+        print(hex(second))
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
         

@@ -6,7 +6,7 @@ import serial
 import time
 
 #################Things need to be updated########################
-port = 'COM12' # windows
+port = 'COM3' # windows
 #port = '/dev/.....' # MAC
 ##################################################################
 ard = serial.Serial(port,9600,timeout=5)
