@@ -3,6 +3,8 @@ import numpy as np
 import serial
 import time
 from matplotlib import pyplot as plt
+#port = '24'
+#ard = serial.Serial(port,9600,timeout=5)
 
 def main():
     print("main code")
@@ -20,6 +22,7 @@ def main():
         if key == ord("q"):
             break
         cv2.destroyAllWindows()
+#---------------------------------------------------------------------------------------------
 def get_Convolution(img_col, img_gray):
     #crop
     resize_col = cv2.resize(img_col,(960,540))
@@ -108,7 +111,6 @@ def get_Convolution(img_col, img_gray):
     return [out1,out2]
     # out3 = cv2.resize(out1,(960,540))
     # cv2.imshow('img',out3)
-
 #---------------------------------------------------------------------------------------------
 class Cords:
     def __init__(self, x, y):
@@ -129,11 +131,10 @@ class EncodeMaze:
         self.map_size.x = self.maze.x*self.cell.x
         self.map_size.y = self.maze.y*self.cell.y
     def getMap(self):
-        first= np.uint64(0)
-        first= np.uint64(0)
-
-        flag_horiz =0
-        flag_vert =0
+        first= 0#171 #np.uint64(0xAB)
+        second= np.uint64(0xCD)
+        flag =0
+        data = []
 
         #traps vertical |||||||||||||||||||||||||
         print("\t\t ---Vertical Walls---")
@@ -141,19 +142,19 @@ class EncodeMaze:
             a=250*x-self.var_x
             b=250*x+self.var_x
             for y in range(0,self.maze.y):
-                flag_horiz = 0
+                flag = 0
                 c=250*y+self.var_y1
                 d=250*y+self.var_y2
                 # print('x,y')
                 # print(x,y)
                 cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
                 for i in range(c,d):
-                    if (flag_horiz == 0):
+                    if (flag == 0):
                         for j in range(a,b):
                             px = self.img[i,j,2]
                             if px > 0:
                                 print('WALL',x,y)
-                                flag_horiz = 1
+                                flag = 1
                                 break
                     else: 
                         break
@@ -163,28 +164,43 @@ class EncodeMaze:
             e=250*(x)+50
             f=250*(x)+200
             for y in range(1,self.maze.y):
-                flag_horiz = 0
+                flag = 0
                 g=250*(y)-25
                 h=250*(y)+25
-                # print(x,y)
                 cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
                 for i in range(e,f):
-                    if (flag_horiz == 0):
+                    if (flag == 0):
                         for j in range(g,h):
                             px = self.img[j,i,2]
                             if px > 0:
-                                print('WALL',x,y)
-                                flag_horiz = 1
+                                print(1)
+                                flag = 1
+                                first <<= 1
+                                first |= 1
+                                data.append(1)
                                 break
-                    else: 
-                        break       
+                            else:
+                                pass
+                    # else:
+                    #     break
 
+                if flag ==0:
+                    print(0)
+                    first <<= 1
+                    data.append(0)     
 
-
+        print(hex(first))
         self.img = cv2.resize(self.img,(960,540))
         cv2.imshow('img',self.img)
-
-
+        
+        
+#---------------------------------------------------------------------------------------------
+class SerialComms:
+    def __init__():
+        pass
+    def SerialComms():
+        pass
+    
 #---------------------------------------------------------------------------------------------
 if __name__ == "__main__":main()
 #---------------------------------------------------------------------------------------------

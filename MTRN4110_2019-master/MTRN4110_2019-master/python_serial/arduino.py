@@ -20,6 +20,7 @@ while (i < 4):
     print ("Python value sent: ")
     print ('mtrn4110')
     ard.write(b'mtrn4110')
+    
     time.sleep(3) # shortened or lengthen this to match the new value in your Arduino code
 
     # Serial read section
