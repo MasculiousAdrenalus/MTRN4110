@@ -131,7 +131,7 @@ class EncodeMaze:
         self.map_size.x = self.maze.x*self.cell.x
         self.map_size.y = self.maze.y*self.cell.y
     def getMap(self):
-        first= 0#171 #np.uint64(0xAB)
+        first= 171 #np.uint64(0xAB)
         second= np.uint64(0xCD)
         flag =0
         data = []
