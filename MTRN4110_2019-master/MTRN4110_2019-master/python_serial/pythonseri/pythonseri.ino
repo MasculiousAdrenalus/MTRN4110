@@ -5,6 +5,9 @@
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 byte incomingByte = 0;
+long header = 0;
+
+void print_maze();
 
 void setup() {
     Serial.begin(9600);
@@ -19,25 +22,57 @@ void setup() {
   lcd.clear();
   lcd.print("test, world!");
 }
-
+typedef struct{
+  byte a,b,c,d,e,f,g,h,i,j;
+}bytes_10;
+bytes_10 maze;
+byte arr[11];
 void loop()
 {
-//    while(!Serial.available());
+  header = 0;
     
-    if (Serial.available() > 0) {
-    //Serial.println("Arduino: ");
-    //Serial.write(Serial.read());
-    incomingByte = Serial.read();
-    lcd.print(incomingByte);
-//    Serial.flush();
-    }
     if (Serial3.available() > 0) {
-    //Serial.println("Arduino: ");
-    //Serial.write(Serial.read());
-    incomingByte = Serial3.read();
-    Serial.println(incomingByte);
-    lcd.print(incomingByte);
-//    Serial.flush();
+      do {
+        incomingByte = Serial3.read();
+        header << 4;
+        header =  header | (incomingByte & 0x000000FF);
+        header &= 0x000000FF;
+      } while (header != 0x000000AB);
+      if (header == 0x000000AB){
+        Serial.print("header:");
+        Serial.println(header, HEX);
+        for (int i = 0; i< 11; i++ ){
+          arr[i] = Serial3.read();
+          Serial.print(i);
+          Serial.print(':');
+          Serial.println(arr[i],HEX);
+          delay(2);
+        }
+        if (arr[0] == 1){
+          maze.a=arr[1];
+          maze.b=arr[2];
+          maze.c=arr[3];
+          maze.d=arr[4];
+          maze.e=arr[5];
+          maze.f=arr[6];
+          maze.g=arr[7];
+          maze.h=arr[8];
+          maze.i=arr[9];
+          maze.j=arr[10];
+        }
+        if (arr[0] == 3){
+          Serial.println("print the maze!!!!!!!");
+          print_maze();
+        }
+
+      }
     }
+    
    
+}
+void print_maze(){
+  Serial.println("- - - - - - - - - - ");
+  Serial.print(" ");
+  
+
 }
