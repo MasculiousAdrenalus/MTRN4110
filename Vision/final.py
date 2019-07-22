@@ -3,12 +3,13 @@ import numpy as np
 import serial
 import time
 from matplotlib import pyplot as plt
-port = 'COM3' 
-ard = serial.Serial(port,9600,timeout=10)
+port = 'COM14' 
+ard = serial.Serial(port,115200,timeout=10)
 
 def main():
     print("main code")
     #Read gray image
+
     img_col = cv2.imread("imgs/maze3.png")
     img_gray = cv2.imread("imgs/maze3.png",0)
     [out1, out2] = get_Convolution(img_col, img_gray)
