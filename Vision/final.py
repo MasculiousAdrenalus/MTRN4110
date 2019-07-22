@@ -151,13 +151,13 @@ class EncodeMaze:
         data_low.append(0x02)
         #traps vertical
         print("\t\t ---Vertical Walls---")
-        for x in range(1,self.maze.x):
-            a=250*x-25
-            b=250*x+25
-            for y in range(0,self.maze.y):
+        for y in range(1,self.maze.y):
+            c=250*y+50
+            d=250*y+200
+            for x in range(0,self.maze.x):
                 flag = 0
-                c=250*y+50
-                d=250*y+200
+                a=250*x-25
+                b=250*x+25
                 # print('x,y')
                 # print(x,y)
                 # cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
