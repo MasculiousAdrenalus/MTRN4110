@@ -13,10 +13,14 @@ def main():
     img_col = cv2.imread("imgs/maze3.png")
     img_gray = cv2.imread("imgs/maze3.png",0)
     [out1, out2] = get_Convolution(img_col, img_gray)
+    image = cv2.resize(out2,(960,540))
+    # cv2.imshow('img',image)
+
     maze = EncodeMaze(out1, 9, 5, 250, 250)
     maze.getMap()
 
-
+    #close port
+    ard.close()
     # Q for quit
     while(1):
         key = cv2.waitKey(0) & 0xFF
@@ -134,11 +138,18 @@ class EncodeMaze:
         self.map_size.y = self.maze.y*self.cell.y
     #------------------------------------------------------------    
     def getMap(self):
-        first= 0xab1 #np.uint64(0xAB)
-        second= 0xab2 
-        flag =0
-        data = []
-
+        first= 0xab01 #np.uint64(0xAB)
+        second= 0xab02
+        temp = 0
+        temp_h = 0
+        temp_l = 0
+        flag = 0
+        data_high = []
+        data_low = []
+        data_high.append(0xab)
+        data_high.append(0x01)
+        data_low.append(0xab)
+        data_low.append(0x02)
         #traps vertical
         print("\t\t ---Vertical Walls---")
         for x in range(1,self.maze.x):
@@ -150,7 +161,7 @@ class EncodeMaze:
                 d=250*y+200
                 # print('x,y')
                 # print(x,y)
-                cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
+                # cv2.rectangle(self.img, (a,c), (b,d), (255,255,0), 2)
                 for i in range(c,d):
                     if (flag == 0):
                         for j in range(a,b):
@@ -159,14 +170,32 @@ class EncodeMaze:
                                 print('WALL',x,y)
                                 second <<= 1
                                 second |= 1
-                                data.append(1)
+                                temp_l <<= 1
+                                temp_l |= 1
+                                # data_low.append(1)
                                 flag = 1
                                 break
                     else: 
                         break
                 if flag ==0:
+                    print('no wall')
                     second <<= 1
-                    data.append(0)
+                    temp_l <<= 1
+                    # data_low.append(0)
+
+                #align to 8 bits
+                temp+=1           
+                print(temp)     
+                print(hex(temp_l))
+                if temp == 8:
+                    # print(hex())
+                    print(temp)
+                    # print(temp_h)
+                    data_low.append(temp_l)
+                    temp_l=0    
+                    temp = 0
+            # if x==self.maze.x-1:
+            #     data_low.append(temp_l)
         #traps horizontal
         print("\t\t ---Horizontal Walls---")
         for x in range(0,self.maze.x):
@@ -176,43 +205,78 @@ class EncodeMaze:
                 flag = 0
                 g=250*(y)-25
                 h=250*(y)+25
-                cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
+                # cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
                 for i in range(e,f):
                     if (flag == 0):
                         for j in range(g,h):
                             px = self.img[j,i,2]
                             if px > 0:
+                                #wall
                                 print('WALL',x,y)
                                 flag = 1
                                 first <<= 1
                                 first |= 1
-                                data.append(1)
+                                temp_h <<= 1
+                                temp_h |= 1
+                                # data_high.append(1)
                                 break
                             else:
                                 pass
+                #no wall
                 if flag ==0:
+                    print("no wall")
                     first <<= 1
-                    data.append(0)     
+                    temp_h <<= 1
+                    # data_high.append(0)
+ 
+                #align to 8 bits
+                temp+=1           
+                print(temp)     
+                print(hex(temp_h))
+                if temp == 8:
+                    # print(hex())
+                    print(temp)
+                    # print(temp_h)
+                    data_high.append(temp_h)
+                    temp_h=0    
+                    temp = 0
+            if x==self.maze.x-1:
+                data_high.append(temp_h)
+            
         #------------------------------------------------------------
-
+        print(data_high)
         print(hex(first))
+        print(data_low)
         print(hex(second))
-        self.img = cv2.resize(self.img,(960,540))
-        cv2.imshow('img',self.img)
+        # self.img = cv2.resize(self.img,(960,540))
+        # cv2.imshow('img',self.img)
 
-        
-        time.sleep(3)
+        # time.sleep(3)
         ard.flush()
         ard.write(b'transmission started')     
         ard.write(b'first')
         
-        i=0
-        while (i < 8):
-            ard.flush()
-            print('here')
-            ard.write(b'________loops')
-            time.sleep(1)
-            i+=1
+        # arr_test = bytearray((first))
+        arr_l= bytearray((data_low))
+        arr_h = bytearray((data_high))
+        print((arr_l))
+        print((arr_h))
+        
+        #ard.write(arr_h)
+        ard.write(arr_h)
+        ard.flush()
+        
+        # # ard.write(arr[0])
+        # i=0
+        # while (i < 8):
+        #     ard.flush()
+        #     print('here')
+        #     #ard.write(b'________loops')
+        #     #ard.write((first).to_bytes(2, byteorder='big'))
+
+        #     time.sleep(1)
+        #     i+=1
+
         
         
 #---------------------------------------------------------------------------------------------
