@@ -9,7 +9,6 @@ ard = serial.Serial(port,115200,timeout=10)
 def main():
     print("main code")
     #Read gray image
-
     img_col = cv2.imread("imgs/maze3.png")
     img_gray = cv2.imread("imgs/maze3.png",0)
     [out1, out2] = get_Convolution(img_col, img_gray)
@@ -22,11 +21,11 @@ def main():
     #close port
     ard.close()
     # Q for quit
-    while(1):
-        key = cv2.waitKey(0) & 0xFF
-        if key == ord("q"):
-            break
-        cv2.destroyAllWindows()
+    # while(1):
+    #     key = cv2.waitKey(0) & 0xFF
+    #     if key == ord("q"):
+    #         break
+    #     cv2.destroyAllWindows()
 #---------------------------------------------------------------------------------------------
 def get_Convolution(img_col, img_gray):
     #crop
@@ -252,9 +251,9 @@ class EncodeMaze:
         # cv2.imshow('img',self.img)
 
         # time.sleep(3)
-        ard.flush()
-        ard.write(b'transmission started')     
-        ard.write(b'first')
+        # ard.flush()
+        # ard.write(b'transmission started')     
+        # ard.write(b'first')
         
         # arr_test = bytearray((first))
         arr_l= bytearray((data_low))
@@ -264,6 +263,7 @@ class EncodeMaze:
         
         #ard.write(arr_h)
         ard.write(arr_h)
+        ard.write(arr_l)
         ard.flush()
         
         # # ard.write(arr[0])
