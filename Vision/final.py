@@ -151,10 +151,17 @@ class EncodeMaze:
         # data_low.append(0x02)
         #traps vertical
         print("\t\t ---Vertical Walls---")
+<<<<<<< HEAD
+        for y in range(1,self.maze.y):
+            c=250*y+50
+            d=250*y+200
+            for x in range(0,self.maze.x):
+=======
         for y in range(0,self.maze.y):
             c=250*y+50
             d=250*y+200
             for x in range(1,self.maze.x):
+>>>>>>> 6c91768ef5a9e764e1013fafc1677ebc9bff0177
                 flag = 0
                 a=250*x-25
                 b=250*x+25
