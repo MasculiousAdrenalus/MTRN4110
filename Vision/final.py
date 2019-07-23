@@ -197,14 +197,14 @@ class EncodeMaze:
             #     data_low.append(temp_l)
         #traps horizontal
         print("\t\t ---Horizontal Walls---")
-        for x in range(0,self.maze.x):
-            e=250*(x)+50
-            f=250*(x)+200
-            for y in range(1,self.maze.y):
+        for y in range(1,self.maze.y):
+            g=250*(y)-25
+            h=250*(y)+25
+            for x in range(0,self.maze.x):
                 flag = 0
-                g=250*(y)-25
-                h=250*(y)+25
-                # cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
+                e=250*(x)+50
+                f=250*(x)+200
+                cv2.rectangle(self.img, (e,g), (f,h), (255,255,0), 2)
                 for i in range(e,f):
                     if (flag == 0):
                         for j in range(g,h):
@@ -239,8 +239,8 @@ class EncodeMaze:
                     data_high.append(temp_h)
                     temp_h=0    
                     temp = 0
-            if x==self.maze.x-1:
-                data_high.append(temp_h)
+        if y==self.maze.y-1:
+            data_high.append(temp_h)
             
         #------------------------------------------------------------
         
@@ -268,7 +268,7 @@ class EncodeMaze:
         print((arr_h))
         print((arr_l))
         #ard.write(arr_h)
-        # time.sleep(3)
+        time.sleep(3)
         ard.flush()
         ard.write(arr_h)
         # ard.flush()
@@ -276,11 +276,13 @@ class EncodeMaze:
         # # time.sleep(10)
         # # ard.flush()
         ard.write(arr_l)
-        # ard.flush()
+        ard.flush()
         # # time.sleep(10)
         # # ard.flush()        
-        ard.write(data_print)
-        ard.flush()
+        # ard.write(data_print)
+        # ard.flush()
+
+
         image = cv2.resize(self.img,(960,540))
         cv2.imshow('img',image)
         # # ard.write(arr[0])
